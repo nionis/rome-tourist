@@ -84,6 +84,28 @@ body.guide {
 
 .guide-back:hover { background: var(--card); border-color: var(--ink-soft); }
 
+.guide-top-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.guide .repo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: var(--muted);
+  transition: color .15s ease, background-color .15s ease;
+}
+
+.guide .repo-link svg { display: block; }
+
+.guide .repo-link:hover { color: var(--ink); background: var(--card); }
+
 /* ---------- hero ---------- */
 
 .guide-main {
