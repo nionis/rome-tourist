@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rome through time — an interactive chronicle</title>
+<meta name="description" content="A single-page interactive map and timeline of Rome: seven ages, sixty-eight moments, a schematic reconstruction for each age, and long-form guides to the Colosseum, St Peter’s Basilica and the Pantheon.">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f7f2e8'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='40' font-weight='bold' fill='%2396361f' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <p class="eyebrow">An interactive chronicle<span class="eyebrow-dates"> · 753 BC – today</span></p>
+      <h1>Rome <span>through time</span></h1>
+    </div>
+    <div class="readout" aria-live="polite">
+      <span class="readout-year" id="yearNow">753 BC</span>
+      <span class="readout-era" id="eraNow">Founding &amp; Monarchy</span>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="map-pane" aria-label="Map of Rome showing the reconstructed city and the moments of the selected age">
+      <div id="map"></div>
+      <div class="map-badge" id="mapBadge">
+        <span class="dot-mark" aria-hidden="true"></span>
+        <span id="mapBadgeText"></span>
+      </div>
+      <div class="map-tools">
+        <button type="button" class="toggle" id="reconToggle" aria-pressed="true">Era overlay</button>
+      </div>
+      <div class="map-legend" id="mapLegend" role="group" aria-label="Reconstruction legend"></div>
+      <p class="map-hint">Select a numbered pin to open its story</p>
+    </section>
+
+    <aside class="panel" id="panel" aria-label="History of the selected age">
+      <div class="era-head">
+        <p class="eyebrow" id="eraRange">753 – 509 BC</p>
+        <h2 id="eraTitle">Founding &amp; Monarchy</h2>
+        <p class="era-blurb" id="eraBlurb"></p>
+      </div>
+
+      <div class="filters" id="filters" role="group" aria-label="Filter moments by kind"></div>
+
+      <p class="feature-empty" id="featureEmpty" hidden></p>
+
+      <article class="feature" id="feature">
+        <figure class="feature-media">
+          <img id="featureImg" alt="" decoding="async">
+          <figcaption id="featureCredit"></figcaption>
+        </figure>
+        <div class="feature-thumbs" id="featureThumbs" role="group" aria-label="Photographs of this moment" hidden></div>
+        <div class="feature-body">
+          <p class="feature-meta">
+            <span class="year-chip" id="featureYear"></span>
+            <span id="featurePlace"></span>
+          </p>
+          <h3 id="featureTitle"></h3>
+          <a class="guide-link" id="featureGuide" hidden></a>
+          <p class="feature-text" id="featureText"></p>
+        </div>
+      </article>
+
+      <p class="list-label"><span id="siteCount">3 moments</span><span>Tap to jump</span></p>
+      <ol class="event-list" id="eventList"></ol>
+
+      <p class="colophon">
+        Photographs from Wikimedia Commons, under the licences shown beside each image.
+        Age overlays are schematic reconstructions, not survey data. Map data ©
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.
+      </p>
+    </aside>
+  </main>
+
+  <footer class="timebar">
+    <div class="timebar-top">
+      <div class="controls">
+        <button type="button" class="btn" id="prev" aria-label="Previous moment">
+          <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M10.5 2.5 4 8l6.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="btn btn-primary" id="play">Play</button>
+        <button type="button" class="btn" id="next" aria-label="Next moment">
+          <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M5.5 2.5 12 8l-6.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="axis-caption" id="axisCaption"></p>
+      <p class="hint">Drag the timeline · ← → anywhere</p>
+    </div>
+
+    <div class="axis" id="axis" role="slider" tabindex="0"
+         aria-label="Year" aria-valuemin="-753" aria-valuemax="2026" aria-valuenow="-753" aria-valuetext="753 BC">
+      <div class="axis-inner" id="axisTrack">
+        <div class="bands" id="bands" aria-hidden="true"></div>
+        <div class="dots" id="dots" aria-hidden="true"></div>
+        <div class="labels" id="labels" aria-hidden="true"></div>
+        <div class="playhead" id="playhead" aria-hidden="true"></div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<noscript>
+  <p style="padding:2rem;font-family:Georgia,serif">This chronicle needs JavaScript for the map and timeline.</p>
+</noscript>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
