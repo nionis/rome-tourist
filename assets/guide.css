@@ -87,24 +87,28 @@ body.guide {
 .guide-top-links {
   display: flex;
   align-items: center;
-  gap: 10px;
   flex-shrink: 0;
 }
 
 .guide .repo-link {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  height: 24px;
   color: var(--muted);
-  transition: color .15s ease, background-color .15s ease;
+  transition: color .15s ease;
 }
 
-.guide .repo-link svg { display: block; }
+.guide .repo-link::before {
+  content: "";
+  width: 1px;
+  height: 14px;
+  margin: 0 12px 0 16px;
+  background: var(--line-strong);
+}
 
-.guide .repo-link:hover { color: var(--ink); background: var(--card); }
+.guide .repo-link svg { display: block; width: 14px; height: 14px; }
+
+.guide .repo-link:hover { color: var(--ink); }
 
 /* ---------- hero ---------- */
 
