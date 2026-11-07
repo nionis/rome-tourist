@@ -2,7 +2,7 @@
 
 ## Purpose of this repository
 
-Research workspace for a short trip to Rome, and the source of a single-page interactive chronicle of the city: a map of the historic centre, a timeline across seven ages, and a short brief with photographs for each of sixty-eight moments, and long-form guides to the Colosseum, St Peter's Basilica and the Pantheon.
+Research workspace for a short trip to Rome, and the source of a single-page interactive chronicle of the city: a map of the historic centre, a timeline across seven ages, and a short brief with photographs for each of sixty-eight moments, long-form guides to the Colosseum, St Peter's Basilica and the Pantheon, and a hundred-word Italian phrasebook with a quiz.
 
 There is no build system, package manager, or test suite. The site is plain HTML, CSS, and JavaScript.
 
@@ -15,12 +15,16 @@ index.html          page shell: header, map, panel, timeline
 colosseum.html      long-form guide to the amphitheatre
 st-peters.html      long-form guide to St Peter's Basilica
 pantheon.html       long-form guide to the Pantheon
-assets/styles.css   all styling (paper/ink palette, serif display type)
-assets/guide.css    shared styling for the three guide pages
-assets/guide.js     section-nav scrollspy for the guide pages
-assets/data.js      window.ROME = { eras, events } — the only content source
+italian.html        the first hundred Italian words: list, quiz, saved words
+assets/styles.css   all chronicle styling (paper/ink palette, serif display type)
+assets/guide.css    shared styling for the long-form pages
+assets/guide.js     section-nav scrollspy for the long-form pages
+assets/italian.css  word list, quiz and saved-list styling
+assets/italian-data.js  window.ITALIAN = { groups, words } — the vocabulary source
+assets/italian.js   word list, search, saves, speech and quiz logic
+assets/data.js      window.ROME = { eras, events } — the chronicle content source
 assets/app.js       Leaflet map, timeline, filters, overlays and playback logic
-assets/img/         136 chronicle photographs + guide images, 1100 px wide, with credits.json
+assets/img/         136 chronicle photographs, guide images and five 1200 × 630 OG cards, with credits.json
 ```
 
 Run it with any static server:
@@ -52,6 +56,12 @@ The geometry is deliberately approximate, derived from standard historical maps 
 `app.js` builds the timeline from era spans, places event dots by year, fits the map to the selected era, draws that era's reconstruction, fans out pins that share a site, and steps through events. The timeline drags, snaps to the nearest event, and ←/→ step through moments from anywhere on the page (map and form fields excepted); Home/End and PageUp/PageDown act on the focused timeline. The filter chips above the feature card apply one `kind` at a time: they rebuild the pin set, the event list, the feature card and the timeline dots (non-matching dots are dimmed), and navigation steps only through matching moments. Each pin takes its category's colour, and the chips carry the same swatches; marker labels name the category for screen readers, so colour is never the only cue.
 
 **Guide pages.** `colosseum.html`, `st-peters.html` and `pantheon.html` are long-form companions to the chronicle, sharing `assets/guide.css` and `assets/guide.js`. Each page opens with a back link of the form `index.html#<event-id>`; `app.js` reads that hash at startup and opens the matching moment. Guide images are named `guide-<page>-<subject>.jpg` and are credited under each figure and in `credits.json`.
+
+**Italian page.** `italian.html` is the language companion, sharing the same guide shell and loading `assets/italian.css`, `assets/italian-data.js` and `assets/italian.js`. Its content is `window.ITALIAN = { groups, words }`: twelve groups with an `id`, `name` and one-line `note`, and exactly one hundred word entries. Each entry has `it`, `en`, broad `ipa`, a `say` respelling (capitals mark stress), `pos`, `group`, a short bilingual `example`, and an optional usage or pronunciation `note`. The Italian string is the stable identity used by saved words and quiz questions, so it must be unique. The page renders the list, search, group filters, a ten-question multiple-choice game in either direction, optional browser speech synthesis, and a saved deck stored in `localStorage` under `rome-italian-saved-v1`; the best streak is under `rome-italian-best-v1`. Do not change those keys without migrating stored ids.
+
+**Adding a word:** add an entry to `assets/italian-data.js` in the right group with all fields, a unique `it`, and a correct example. The counts and filters update themselves, but the copy says "100" in several places, so either keep the total at one hundred or update the page title, standfirst, facts and source note together. Keep `ipa` broad and standard; mark Roman variation only where it matters.
+
+**Social previews.** Every page carries absolute Open Graph and Twitter `summary_large_image` tags, a canonical link, and a 1200 × 630 JPEG preview under `assets/img/og-<page>.jpg`. The base URL is the GitHub Pages address `https://nionis.github.io/rome-tourist/`; if the site moves to a custom domain, update the canonical and `og:url`/image URLs on all five pages together. The previews are composites of the page title and its hero photograph: if a page title or hero changes, regenerate its card rather than leaving the old wording. Keep the image at 1200 × 630, JPEG, well under 1 MB, and use the absolute URL — relative paths are ignored by several social crawlers.
 
 **Adding a moment:** add an event to `assets/data.js` with the right `kind` and at least two images, drop 1100 px JPEGs at `assets/img/<slug>.jpg`, and give each image `alt` text and a `credit` with the author, licence and Commons file URL. Keep `year` and `label` consistent, and keep the era's `start`/`end` intact — the timeline geometry depends on them. If the moment implies a change to an era's built-up extent (a new district, a wall), update that era's `overlay` too.
 
