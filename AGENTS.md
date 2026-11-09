@@ -2,7 +2,7 @@
 
 ## Purpose of this repository
 
-Research workspace for a short trip to Rome, and the source of a single-page interactive chronicle of the city: a map of the historic centre, a timeline across seven ages, and a short brief with photographs for each of sixty-eight moments, long-form guides to the Colosseum, St Peter's Basilica and the Pantheon, and a hundred-word Italian phrasebook with a quiz.
+Research workspace for a short trip to Rome, and the source of a single-page interactive chronicle of the city: a map of the historic centre, a timeline across seven ages, and a short brief with photographs for each of sixty-eight moments, long-form guides to the Colosseum, St Peter's Basilica and the Pantheon, a first-visit itinerary that presents the same moments in two orders, and a hundred-word Italian phrasebook with a quiz.
 
 There is no build system, package manager, or test suite. The site is plain HTML, CSS, and JavaScript.
 
@@ -11,20 +11,23 @@ This file is also the project's factual baseline. Material added here must stay 
 ## The website
 
 ```
-index.html          page shell: header, map, panel, timeline
+index.html          page shell: header, panel, map, timeline
 colosseum.html      long-form guide to the amphitheatre
 st-peters.html      long-form guide to St Peter's Basilica
 pantheon.html       long-form guide to the Pantheon
 italian.html        the first hundred Italian words: list, quiz, saved words
+itinerary.html      first-visit itinerary: by age or by neighbourhood
 assets/styles.css   all chronicle styling (paper/ink palette, serif display type)
 assets/guide.css    shared styling for the long-form pages
 assets/guide.js     section-nav scrollspy for the long-form pages
 assets/italian.css  word list, quiz and saved-list styling
 assets/italian-data.js  window.ITALIAN = { groups, words } — the vocabulary source
 assets/italian.js   word list, search, saves, speech and quiz logic
+assets/itinerary.css  itinerary layout, stop list and map styling
+assets/itinerary.js  two orders over window.ROME, chapter distances and the itinerary map
 assets/data.js      window.ROME = { eras, events } — the chronicle content source
 assets/app.js       Leaflet map, timeline, filters, overlays and playback logic
-assets/img/         136 chronicle photographs, guide images and five 1200 × 630 OG cards, with credits.json
+assets/img/         136 chronicle photographs, guide images and six 1200 × 630 OG cards, with credits.json
 ```
 
 Run it with any static server:
@@ -41,7 +44,7 @@ Opening `index.html` directly also works, but a server is the reliable path.
 **Content model.** `assets/data.js` is the single source of truth:
 
 - `eras[]` — `id`, `name`, `short`, `start`/`end` (negative years are BC), `range`, `color`, `blurb`, and `overlay`.
-- `events[]` — `id`, `era`, `kind` (`history` | `monument` | `church` | `city`), `year` (numeric, used for ordering and the timeline), `label` (display string, e.g. `"c. AD 125"`), `title`, `place`, `lat`, `lng`, `blurb`, `images[]`, and an optional `guide` `{ href, name }`. Each image is `{ img, alt, credit }`, with `img` a slug under `assets/img/` and `credit` `{ name, license, url }`. The first image is the primary; every moment carries at least two, and the feature card lets the reader switch between them. When `guide` is present, the feature card links to that long-form page.
+- `events[]` — `id`, `era`, `kind` (`history` | `monument` | `church` | `city`), `year` (numeric, used for ordering and the timeline), `label` (display string, e.g. `"c. AD 125"`), `title`, `place`, `lat`, `lng`, `blurb`, `images[]`, and an optional `guide` `{ href, name }`. Each image is `{ img, alt, credit }`, with `img` a slug under `assets/img/` and `credit` `{ name, license, url }`. The first image is the primary; every moment carries at least two, and the feature card lets the reader switch between them. Clicking the featured photograph opens a slideshow of the moment's images (←/→ to move, Esc or the close button to leave). When `guide` is present, the feature card links to that long-form page.
 
 **Era overlays.** Each era's `overlay` is drawn on the basemap as a schematic reconstruction:
 
@@ -61,9 +64,13 @@ The geometry is deliberately approximate, derived from standard historical maps 
 
 **Adding a word:** add an entry to `assets/italian-data.js` in the right group with all fields, a unique `it`, and a correct example. The counts and filters update themselves, but the copy says "100" in several places, so either keep the total at one hundred or update the page title, standfirst, facts and source note together. Keep `ipa` broad and standard; mark Roman variation only where it matters.
 
-**Social previews.** Every page carries absolute Open Graph and Twitter `summary_large_image` tags, a canonical link, and a 1200 × 630 JPEG preview under `assets/img/og-<page>.jpg`. The base URL is the GitHub Pages address `https://nionis.github.io/rome-tourist/`; if the site moves to a custom domain, update the canonical and `og:url`/image URLs on all five pages together. The previews are composites of the page title and its hero photograph: if a page title or hero changes, regenerate its card rather than leaving the old wording. Keep the image at 1200 × 630, JPEG, well under 1 MB, and use the absolute URL — relative paths are ignored by several social crawlers.
+**Itinerary page.** `itinerary.html` is the first-visit companion: every moment in `assets/data.js`, arranged two ways. The default neighbourhood order uses the nine `PLACES` chapters in `assets/itinerary.js` — ancient core, Capitoline and Monti, Navona and the Pantheon, Campo Marzio and the Spanish Steps, Vatican and Prati, Trastevere and the Janiculum, Aventine, Testaccio and the walls, Esquiline, Lateran and the north-east, and beyond the centre. Each chapter has a hand-ordered `ids` list; change that list to change the walk. `?by=age` groups the events into the seven era chapters, in era order, each opening at its earliest event and then following a nearest-neighbour walk. Every moment must appear in both orders: an event missing from every `ids` list is assigned to its nearest chapter and inserted by proximity, so new moments join the page automatically, but add their id to a chapter when the walking order matters.
 
-**Adding a moment:** add an event to `assets/data.js` with the right `kind` and at least two images, drop 1100 px JPEGs at `assets/img/<slug>.jpg`, and give each image `alt` text and a `credit` with the author, licence and Commons file URL. Keep `year` and `label` consistent, and keep the era's `start`/`end` intact — the timeline geometry depends on them. If the moment implies a change to an era's built-up extent (a new district, a wall), update that era's `overlay` too.
+The map draws only the current chapter: numbered pins follow the list, pins at the same site fan out, and the dashed line connects stops in order. Distances are straight-line sums multiplied by 1.3 for streets and are labelled estimates; they are not survey data or turn-by-turn directions. The page loads `assets/guide.css` for the shared shell plus `assets/itinerary.css` and `assets/itinerary.js`, and carries its own `og-itinerary.jpg` card.
+
+**Social previews.** Every page carries absolute Open Graph and Twitter `summary_large_image` tags, a canonical link, and a 1200 × 630 JPEG preview under `assets/img/og-<page>.jpg`. The base URL is the GitHub Pages address `https://nionis.github.io/rome-tourist/`; if the site moves to a custom domain, update the canonical and `og:url`/image URLs on all six pages together. The previews are composites of the page title and its hero photograph: if a page title or hero changes, regenerate its card rather than leaving the old wording. Keep the image at 1200 × 630, JPEG, well under 1 MB, and use the absolute URL — relative paths are ignored by several social crawlers.
+
+**Adding a moment:** add an event to `assets/data.js` with the right `kind` and at least two images, drop 1100 px JPEGs at `assets/img/<slug>.jpg`, and give each image `alt` text and a `credit` with the author, licence and Commons file URL. Keep `year` and `label` consistent, and keep the era's `start`/`end` intact — the timeline geometry depends on them. If the moment implies a change to an era's built-up extent (a new district, a wall), update that era's `overlay` too. The itinerary picks the new moment up in both orders; add its id to a `PLACES` chapter in `assets/itinerary.js` when its walking position matters.
 
 **Images.** Wikimedia Commons files, resized to 1100 px; per-file metadata lives in `assets/img/credits.json` and is surfaced under each photo. If an image is replaced, update both the credit entry and the event's `images[]` entry.
 

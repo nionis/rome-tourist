@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A first visit to Rome — an itinerary in two orders</title>
+<meta name="description" content="A first visit to Rome in two orders: by age, oldest first, or by neighbourhood, as nine walks across the historic centre. Sixty-eight moments from the chronicle with a map, distances and practical notes.">
+<link rel="canonical" href="https://nionis.github.io/rome-tourist/itinerary.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Rome through time">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="A first visit to Rome — an itinerary in two orders">
+<meta property="og:description" content="By age, oldest first, or by neighbourhood: nine walks through the same sixty-eight moments, with a map and estimated distances.">
+<meta property="og:url" content="https://nionis.github.io/rome-tourist/itinerary.html">
+<meta property="og:image" content="https://nionis.github.io/rome-tourist/assets/img/og-itinerary.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Trevi Fountain and its cascade in daylight, with the title Rome for the first time.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A first visit to Rome — an itinerary in two orders">
+<meta name="twitter:description" content="By age or by neighbourhood: nine walks through sixty-eight moments of Rome, with a map and estimated distances.">
+<meta name="twitter:image" content="https://nionis.github.io/rome-tourist/assets/img/og-itinerary.jpg">
+<meta name="twitter:image:alt" content="The Trevi Fountain and its cascade in daylight, with the title Rome for the first time.">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f7f2e8'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='40' font-weight='bold' fill='%2396361f' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="assets/guide.css?v=10">
+<link rel="stylesheet" href="assets/itinerary.css?v=5">
+</head>
+<body class="guide itinerary">
+<a class="guide-skip" href="#content">Skip to content</a>
+<header class="guide-top">
+  <a class="guide-brand" href="index.html">Rome <span>through time</span></a>
+  <div class="guide-top-links">
+    <a class="guide-back" href="index.html">← Back to the chronicle</a>
+    <a class="repo-link" href="https://github.com/nionis/rome-tourist" aria-label="Source code on GitHub" title="Source code on GitHub"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg></a>
+  </div>
+</header>
+<main class="guide-main it-main" id="content">
+  <section class="it-hero">
+    <div class="it-hero-copy">
+      <p class="guide-kicker">A first visit</p>
+      <h1>Rome for the<br>first time</h1>
+      <p class="guide-standfirst">Every moment in the chronicle, arranged two ways: seven ages, oldest first, or nine neighbourhood walks. The stops are the same; only the grouping and order change.</p>
+      <ul class="guide-facts">
+        <li><span>Moments</span><b id="factMoments">68</b></li>
+        <li><span>Walks by area</span><b id="factWalks">9</b></li>
+        <li><span>Ages</span><b id="factAges">7</b></li>
+        <li><span>On foot, by area</span><b id="factDistance">≈ 23 km</b></li>
+      </ul>
+    </div>
+    <figure class="guide-hero-media it-hero-media">
+      <img src="assets/img/trevi.jpg" alt="The Trevi Fountain and its cascade in daylight, below the central figure of Oceanus." width="1100" height="597">
+      <figcaption>NikonZ7II · CC BY-SA 4.0 · <a href="https://commons.wikimedia.org/wiki/File:Trevi_Fountain_-_Roma.jpg">Wikimedia Commons</a></figcaption>
+    </figure>
+  </section>
+
+  <div class="it-toolbar" id="itToolbar">
+    <div class="order-switch" role="group" aria-label="Order the itinerary">
+      <button type="button" data-order="place" aria-pressed="true">By neighbourhood</button>
+      <button type="button" data-order="age" aria-pressed="false">By age</button>
+    </div>
+    <p class="it-summary" id="itSummary"></p>
+  </div>
+  <p class="it-explainer" id="itExplainer"></p>
+
+  <div class="it-layout">
+    <aside class="it-map-pane" aria-label="Map of the current walk">
+      <div class="it-map" id="itMap"></div>
+      <div class="it-map-foot">
+        <p class="it-map-caption" id="itMapCaption">Walk 1 · The ancient core</p>
+        <p>Numbers follow the order in the list; pins close together fan out. Lines are straight links between stops, not turn-by-turn directions.</p>
+      </div>
+    </aside>
+
+    <section class="it-walks" id="itWalks" aria-label="Itinerary chapters"></section>
+  </div>
+
+  <section class="it-notes" aria-labelledby="before">
+    <h2 id="before">Before you go</h2>
+    <div class="it-notes-grid">
+      <article>
+        <h3>Book the two big ones</h3>
+        <p>Timed tickets for the Colosseum, Forum and Palatine, and for the Vatican Museums, sell out. Use the official sites — <a href="https://colosseo.it/">colosseo.it</a> and <a href="https://www.museivaticani.va/">museivaticani.va</a> — and carry the ID the booking was made under.</p>
+      </article>
+      <article>
+        <h3>Dress for churches</h3>
+        <p>Covered shoulders and knees, quiet voices, no flash. Several churches close for a few hours at midday, and a few close without notice for services.</p>
+      </article>
+      <article>
+        <h3>Water and shoes</h3>
+        <p>The <em>nasoni</em> fountains run drinkable water; carry a bottle. The centre is cobbled and the days add up, so wear shoes you have already walked in.</p>
+      </article>
+      <article>
+        <h3>Check before you commit</h3>
+        <p>Opening days and access change with conservation work and the season. Practical details on this page are as of 2026; check the official site the day before rather than trusting any guide, this one included.</p>
+      </article>
+    </div>
+    <p class="it-fineprint"><b>About the distances.</b> Each leg is the straight-line distance between two stops multiplied by 1.3 for streets, then rounded; totals are the sum of the legs. They exclude time inside sites and underestimate real walking, so treat them as a floor. The historic centre is small — Colosseum to Pantheon is about 2 km, Pantheon to St Peter’s about 2 km — but the age chapters cross the whole city and need the metro.</p>
+  </section>
+
+  <nav class="guide-more" aria-label="More pages">
+    <a href="index.html"><span>The source</span>The chronicle — every moment on a map and timeline</a>
+    <a href="italian.html"><span>For the trip</span>The first hundred Italian words, with a quiz</a>
+  </nav>
+  <footer class="guide-foot">Part of <a href="index.html">Rome through time</a>, a chronicle of the city. Written and checked as of 2026; practical details change.</footer>
+</main>
+
+<noscript>
+  <p style="padding:2rem;font-family:Georgia,serif">This itinerary needs JavaScript to build the walks. Every moment is also on <a href="index.html">the chronicle</a>.</p>
+</noscript>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="assets/data.js"></script>
+<script src="assets/itinerary.js?v=5"></script>
+</body>
+</html>

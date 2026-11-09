@@ -49,6 +49,14 @@
     featureText: $("featureText"),
     featureGuide: $("featureGuide"),
     featureEmpty: $("featureEmpty"),
+    featureOpen: $("featureOpen"),
+    lightbox: $("lightbox"),
+    lightboxImg: $("lightboxImg"),
+    lightboxCredit: $("lightboxCredit"),
+    lightboxCount: $("lightboxCount"),
+    lightboxPrev: $("lightboxPrev"),
+    lightboxNext: $("lightboxNext"),
+    lightboxClose: $("lightboxClose"),
     eventList: $("eventList"),
     siteCount: $("siteCount"),
     mapBadge: $("mapBadge"),
@@ -72,6 +80,7 @@
     year: MIN,
     eraId: null,
     featureId: null,
+    imageIndex: 0,
     playing: false,
     timer: null,
     kind: "all",
@@ -477,6 +486,7 @@
     const image = event.images[index];
     if (!image) return;
 
+    state.imageIndex = index;
     el.featureImg.alt = image.alt;
 
     if (el.featureImg.dataset.src !== image.img) {
@@ -539,6 +549,44 @@
     if (opts.scroll) {
       el.panel.scrollTo({ top: 0, behavior: REDUCED ? "auto" : "smooth" });
     }
+  }
+
+  /* ---------- slideshow ---------- */
+
+  let slideEvent = null;
+  let slideIndex = 0;
+
+  function renderSlide() {
+    const images = slideEvent?.images || [];
+    const image = images[slideIndex];
+    if (!image) return;
+
+    el.lightboxImg.src = `assets/img/${image.img}.jpg`;
+    el.lightboxImg.alt = image.alt;
+    el.lightboxCredit.innerHTML =
+      `<a href="${esc(image.credit.url)}" target="_blank" rel="noopener">${esc(image.credit.name)}</a>` +
+      ` · ${esc(image.credit.license)} · Wikimedia Commons`;
+    el.lightboxCount.textContent = `${slideIndex + 1} / ${images.length}`;
+    el.lightboxPrev.disabled = images.length < 2;
+    el.lightboxNext.disabled = images.length < 2;
+  }
+
+  function openSlideshow(event) {
+    const images = event.images || [];
+    if (!images.length) return;
+
+    slideEvent = event;
+    slideIndex = Math.min(state.imageIndex, images.length - 1);
+    renderSlide();
+    el.lightbox.showModal();
+  }
+
+  function stepSlide(direction) {
+    const images = slideEvent?.images || [];
+    if (images.length < 2) return;
+
+    slideIndex = (slideIndex + direction + images.length) % images.length;
+    renderSlide();
   }
 
   function syncUI() {
@@ -623,7 +671,7 @@
     if (!list.length) return;
     const index = nearestVisibleIndex();
     const next = list[Math.max(0, Math.min(list.length - 1, index + direction))];
-    if (next) selectEvent(next.id, { scroll: true });
+    if (next) selectEvent(next.id);
   }
 
   function firstVisibleInEra(eraId) {
@@ -635,7 +683,7 @@
     for (let i = index + direction; i >= 0 && i < eras.length; i += direction) {
       const first = firstVisibleInEra(eras[i].id);
       if (first) {
-        selectEvent(first.id, { scroll: true });
+        selectEvent(first.id);
         return;
       }
     }
@@ -664,7 +712,7 @@
         stopPlay();
         return;
       }
-      selectEvent(next.id, { scroll: true });
+      selectEvent(next.id);
       state.timer = setTimeout(tick, 3400);
     };
 
@@ -734,6 +782,7 @@
      PageUp/PageDown stay on the slider, so they never hijack page scrolling. */
   document.addEventListener("keydown", (event) => {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (el.lightbox.open) return;
     if (!STEP_KEYS.includes(event.key)) return;
 
     const target = event.target;
@@ -750,11 +799,11 @@
     else if (event.key === "ArrowRight") stepEvent(1);
     else if (event.key === "Home") {
       const first = visibleEvents()[0];
-      if (first) selectEvent(first.id, { scroll: true });
+      if (first) selectEvent(first.id);
     } else if (event.key === "End") {
       const all = visibleEvents();
       const last = all[all.length - 1];
-      if (last) selectEvent(last.id, { scroll: true });
+      if (last) selectEvent(last.id);
     } else if (event.key === "PageUp") stepEra(-1);
     else if (event.key === "PageDown") stepEra(1);
   });
@@ -790,6 +839,27 @@
     if (!thumb) return;
     const feature = byId[state.featureId];
     if (feature) renderImage(feature, Number(thumb.dataset.index));
+  });
+
+  el.featureOpen.addEventListener("click", () => {
+    const feature = byId[state.featureId];
+    if (feature) openSlideshow(feature);
+  });
+
+  el.lightboxClose.addEventListener("click", () => el.lightbox.close());
+  el.lightboxPrev.addEventListener("click", () => stepSlide(-1));
+  el.lightboxNext.addEventListener("click", () => stepSlide(1));
+  el.lightbox.addEventListener("click", (event) => {
+    if (event.target === el.lightbox) el.lightbox.close();
+  });
+  el.lightbox.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      stepSlide(-1);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      stepSlide(1);
+    }
   });
 
   el.featureImg.addEventListener("load", () => {

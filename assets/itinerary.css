@@ -1,0 +1,521 @@
+/* Rome through time — first-visit itinerary: two orders, one map */
+
+:root {
+  --kind-history: #8c3b2e;
+  --kind-monument: #8a5f10;
+  --kind-church: #33617b;
+  --kind-city: #55613a;
+}
+
+html { scroll-padding-top: 92px; }
+
+.it-main { max-width: 1280px; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- hero ---------- */
+
+.it-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+  gap: clamp(24px, 4vw, 58px);
+  align-items: center;
+  padding: 8px 0 34px;
+}
+
+.it-hero h1 {
+  margin: 0 0 18px;
+  font: 600 clamp(46px, 6.6vw, 84px)/.94 var(--serif);
+  letter-spacing: -.035em;
+}
+
+.it-hero .guide-standfirst { max-width: 46ch; }
+
+.it-hero-media img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+/* ---------- order toolbar ---------- */
+
+.it-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.order-switch {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+}
+
+.order-switch button {
+  padding: 8px 15px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: 600 10px/1 var(--sans);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .15s ease, background .15s ease;
+}
+
+.order-switch button:hover { color: var(--ink); }
+
+.order-switch button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.order-switch button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.it-summary {
+  margin: 0;
+  font: 500 10.5px/1.4 var(--sans);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+}
+
+.it-explainer {
+  max-width: 82ch;
+  margin: 16px 0 30px;
+  font: 400 14px/1.6 var(--sans);
+  color: var(--ink-soft);
+}
+
+/* ---------- layout ---------- */
+
+.it-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, .82fr);
+  gap: clamp(22px, 3vw, 40px);
+  align-items: start;
+}
+
+.it-map-pane {
+  position: sticky;
+  top: 78px;
+  grid-column: 2;
+  grid-row: 1;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+.it-map {
+  height: min(68vh, 690px);
+  min-height: 380px;
+  background: #e9e1d2;
+}
+
+.it-map-fallback {
+  margin: 0;
+  padding: 28px 22px;
+  font: 400 13px/1.6 var(--sans);
+  color: var(--muted);
+}
+
+.it-map-foot {
+  padding: 10px 13px 12px;
+  border-top: 1px solid var(--line);
+  background: var(--card);
+}
+
+.it-map-foot p {
+  margin: 0;
+  font: 400 10.5px/1.5 var(--sans);
+  color: var(--faint);
+}
+
+.it-map-foot .it-map-caption {
+  margin-bottom: 3px;
+  font: 600 11px/1.3 var(--sans);
+  letter-spacing: .04em;
+  color: var(--ink);
+}
+
+.it-walks {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+/* ---------- chapters ---------- */
+
+.it-walk {
+  padding: 4px 0 30px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.it-walk + .it-walk { margin-top: 26px; }
+
+.it-walk.is-current .it-walk-kicker { color: var(--accent); }
+
+.it-walk-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 0 18px;
+}
+
+.it-walk-kicker {
+  margin: 0 0 7px;
+  font: 600 9.5px/1 var(--sans);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.it-walk-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 9px;
+  font: 600 clamp(25px, 3vw, 33px)/1.08 var(--serif);
+  letter-spacing: -.02em;
+}
+
+.it-walk-dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c, var(--accent));
+}
+
+.it-walk-blurb {
+  max-width: 62ch;
+  margin: 0;
+  font: 400 14px/1.6 var(--sans);
+  color: var(--ink-soft);
+}
+
+.it-walk-note {
+  margin: 8px 0 0;
+  font: 400 11.5px/1.5 var(--sans);
+  color: var(--faint);
+}
+
+.it-walk-map {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  padding: 7px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: 600 9.5px/1 var(--sans);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+
+.it-walk-map:hover {
+  border-color: var(--ink-soft);
+  background: var(--card);
+  color: var(--ink);
+}
+
+.it-walk-map:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- stops ---------- */
+
+.it-stops {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.it-stop { margin: 0; }
+
+.it-stop-head {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto 8px 12px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 11px 6px 11px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.it-stop-head:hover { background: color-mix(in srgb, var(--card) 65%, transparent); }
+
+.it-stop-head:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.it-stop-num {
+  font: 600 10px/1 var(--sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+  text-align: center;
+}
+
+.it-stop-text {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.it-stop-title {
+  font: 600 15.5px/1.3 var(--serif);
+  letter-spacing: -.012em;
+  color: var(--ink);
+}
+
+.it-stop-place {
+  font: 400 11px/1.25 var(--sans);
+  color: var(--muted);
+}
+
+.it-stop-year {
+  justify-self: end;
+  font: 500 9.5px/1.3 var(--sans);
+  letter-spacing: .04em;
+  color: var(--faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.it-kind {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--kind, var(--accent));
+}
+
+.it-kind[data-kind="history"] { --kind: var(--kind-history); }
+.it-kind[data-kind="monument"] { --kind: var(--kind-monument); }
+.it-kind[data-kind="church"] { --kind: var(--kind-church); }
+.it-kind[data-kind="city"] { --kind: var(--kind-city); }
+
+.it-chev {
+  color: var(--faint);
+  transition: transform .16s ease;
+}
+
+.it-stop-head[aria-expanded="true"] .it-chev { transform: rotate(90deg); }
+
+.it-leg {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 3px 0 3px 42px;
+  font: 400 9.5px/1 var(--sans);
+  letter-spacing: .04em;
+  color: var(--faint);
+}
+
+.it-leg::before {
+  content: "";
+  width: 1px;
+  height: 15px;
+  background: var(--line-strong);
+}
+
+.it-stop-detail {
+  margin: 0 0 0 14px;
+  padding: 4px 0 20px 28px;
+  border-left: 1px dashed var(--line-strong);
+}
+
+.it-stop-figure { margin: 6px 0 12px; }
+
+.it-stop-figure img {
+  width: 100%;
+  max-width: 430px;
+  border-radius: 7px;
+  background: #e6ddcc;
+}
+
+.it-stop-figure figcaption {
+  margin-top: 6px;
+  font: 400 10px/1.45 var(--sans);
+  color: var(--faint);
+}
+
+.it-stop-detail p {
+  max-width: 62ch;
+  margin: 0 0 11px;
+  font: 400 13.5px/1.65 var(--sans);
+  color: var(--ink-soft);
+}
+
+.it-stop-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  padding-top: 2px;
+}
+
+.it-stop-links a {
+  font: 600 11px/1.4 var(--sans);
+  letter-spacing: .02em;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding-bottom: 1px;
+}
+
+.it-stop-links a:hover { border-color: var(--accent); }
+
+/* ---------- map markers ---------- */
+
+.it-pin-wrap { display: grid; place-items: center; background: none; border: 0; }
+
+.it-pin {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--c, var(--accent));
+  border: 2px solid #fffaf1;
+  color: #fffdf7;
+  font: 600 10.5px/1 var(--sans);
+  box-shadow: 0 2px 7px rgba(30, 22, 14, .38);
+  transition: transform .16s ease, box-shadow .16s ease;
+  cursor: pointer;
+}
+
+.it-pin:hover { transform: scale(1.12); }
+
+.it-pin.is-active {
+  transform: scale(1.28);
+  box-shadow: 0 0 0 4px rgba(255, 250, 241, .75), 0 5px 16px rgba(30, 22, 14, .45);
+}
+
+/* ---------- notes ---------- */
+
+.it-notes {
+  margin-top: 46px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.it-notes > h2 {
+  margin: 0 0 18px;
+  font: 600 clamp(25px, 3vw, 32px)/1.1 var(--serif);
+  letter-spacing: -.015em;
+}
+
+.it-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 34px;
+}
+
+.it-notes article h3 {
+  margin: 0 0 6px;
+  font: 600 13px/1.3 var(--sans);
+}
+
+.it-notes article p {
+  margin: 0;
+  font: 400 13px/1.6 var(--sans);
+  color: var(--ink-soft);
+}
+
+.it-fineprint {
+  max-width: 80ch;
+  margin: 26px 0 0;
+  padding-left: 13px;
+  border-left: 2px solid var(--line-strong);
+  font: 400 12px/1.6 var(--sans);
+  color: var(--muted);
+}
+
+.it-fineprint b { color: var(--ink); font-weight: 600; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1120px) {
+  .it-layout { grid-template-columns: minmax(0, 1fr); }
+  .it-map-pane {
+    position: static;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .it-walks { grid-column: 1; grid-row: 2; }
+  .it-map { height: 340px; min-height: 0; }
+  .it-walk:first-child { margin-top: 26px; }
+}
+
+@media (max-width: 860px) {
+  .it-hero { grid-template-columns: minmax(0, 1fr); }
+  .it-hero-media { order: -1; }
+  .it-hero h1 { font-size: clamp(42px, 10vw, 64px); }
+  .it-notes-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+}
+
+@media (max-width: 620px) {
+  .it-toolbar { flex-wrap: wrap; gap: 8px; }
+  .it-summary { text-align: left; }
+  .it-walk-head { flex-direction: column; gap: 10px; }
+  .it-walk-map { margin-top: 0; }
+  .it-stop-head { grid-template-columns: 26px minmax(0, 1fr) auto 8px 12px; gap: 9px; }
+  .it-stop-year { font-size: 8.5px; }
+  .it-stop-title { font-size: 14.5px; }
+  .it-stop-detail { margin-left: 6px; padding-left: 20px; }
+  .it-leg { padding-left: 30px; }
+  .it-map { height: 300px; }
+  .it-pin { width: 22px; height: 22px; font-size: 9.5px; }
+}
+
+@media (max-width: 420px) {
+  .order-switch button { padding: 8px 10px; font-size: 9px; letter-spacing: .06em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .it-pin,
+  .it-chev,
+  .it-stop-head,
+  .it-walk-map,
+  .order-switch button { transition: none; }
+}
